@@ -1,7 +1,12 @@
 package com.example.androiduitesting;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,7 +28,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         nameField = findViewById(R.id.field_nameEntry);
         newName  = findViewById(R.id.editText_name);
@@ -64,5 +75,16 @@ public class MainActivity extends AppCompatActivity {
                 cityAdapter.clear();
             }
         });
+
+        // Create listener for the list
+        cityList.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedCity = cityList.getItemAtPosition(position).toString();
+            Intent intent = new Intent(MainActivity.this, ShowActivity.class);
+            intent.putExtra("city", selectedCity);
+            startActivity(intent);
+
+        });
+
+
     }
 }
